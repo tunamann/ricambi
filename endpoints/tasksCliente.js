@@ -1,8 +1,8 @@
 function endpoint(app, connpool) {
 
-    app.post("/api/prodotti", (req, res) => {
+    app.post("/api/cliente", (req, res) => {
         var errors = []
-        /* controsllo dati inseriti
+        /* controllo dati inseriti
         if (!req.body.description) {
             errors.push("No description specified");
         }
@@ -15,12 +15,12 @@ function endpoint(app, connpool) {
             return;
         }
         var data = {
-            descrizione: req.body.descrizione,
-            
+            description: req.body.description,
+            status: req.body.status,
         }
 
-        var sql = 'INSERT INTO task (descrizione) VALUES ("desc")'
-        var params = [data.descrizione]
+        var sql = 'INSERT INTO task (nome) VALUES ("alfredo")'
+        var params = [data.nome]
         connpool.query(sql, params, (error, results) => {
             if (error) {
                 res.status(400).json({ "error": error.message })
