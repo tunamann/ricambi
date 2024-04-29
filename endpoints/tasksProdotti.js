@@ -38,8 +38,8 @@ function endpoint(app, connpool) {
 
 
 
-    app.get("/api/tasks", (req, res, next) => {
-        var sql = "select * from task"
+    app.get("/api/prodotti", (req, res, next) => {
+        var sql = "select * from prodotti"
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -54,8 +54,8 @@ function endpoint(app, connpool) {
     });
 
 
-    app.get("/api/tasks/:id", (req, res) => {
-        var sql = "select * from task where task_id = ?"
+    app.get("/api/prodotti/:id", (req, res) => {
+        var sql = "select * from prodotti where prodotti_id = ?"
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -70,17 +70,16 @@ function endpoint(app, connpool) {
     });
 
 
-    app.put("/api/tasks/:id", (req, res) => {
+    app.put("/api/prodotti/:id", (req, res) => {
         var data = {
-            description: req.body.description,
-            status: req.body.status,
+            descrizione: req.body.descrizione,
+            
         }
         connpool.execute(
-            `UPDATE task set 
-               description = COALESCE(?,description), 
-               status = COALESCE(?,status) 
-               WHERE task_id = ?`,
-            [data.description, data.status, req.params.id],
+            `UPDATE prodotti set 
+               descrizione = COALESCE(?,descrizione) 
+               WHERE descrizione_id = ?`,
+            [data.descrizione, req.params.id],
             function (err, result) {
                 if (err){
                     res.status(400).json({"error": err.message})
@@ -97,9 +96,9 @@ function endpoint(app, connpool) {
 
 
 
-    app.delete("/api/tasks/:id", (req, res) => {
+    app.delete("/api/prodotti/:id", (req, res) => {
         connpool.execute(
-            'DELETE FROM task WHERE task_id = ?',
+            'DELETE FROM prodotti WHERE prodotti_id = ?',
             [req.params.id],
             function (err, result) {
                 if (err){
