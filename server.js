@@ -1,4 +1,4 @@
-var express = require("express") 
+var express = require("express")
 var app = express()
 var connpool = require("./database.js")
 
@@ -10,20 +10,24 @@ app.use(bodyParser.json());
 
 
 // Server port
-var HTTP_PORT = 8000 
+var HTTP_PORT = 8000
 // Start server
 app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+    console.log("Server running on port %PORT%".replace("%PORT%", HTTP_PORT))
 });
 // Root endpoint
 app.get("/", (req, res, next) => {
-    res.json({"message":"Ok"})
+    res.json({ "message": "Ok" })
 });
 
-require("./endpoints/tasks.js")(app,connpool)
+require("./endpoints/tasks.js")(app, connpool)
+require("./endpoints/cliente.js")(app, connpool)
+require("./endpoints/prodotti.js")(app, connpool)
+require("./endpoints/fornitore.js")(app, connpool)
+require("./endpoints/ordine.js")(app, connpool)
 // Insert here other API endpoints
 
 // Default response for any other request
-app.use(function(req, res){
+app.use(function (req, res) {
     res.status(404);
 });
