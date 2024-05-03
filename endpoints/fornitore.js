@@ -1,6 +1,6 @@
 function endpoint(app, connpool) {
 
-    app.post("/api/modello", (req, res) => {
+    app.post("/api/fornitore", (req, res) => {
         var errors = []
         /* controllo dati inseriti
         if (!req.body.description) {
@@ -15,11 +15,12 @@ function endpoint(app, connpool) {
             return;
         }
         var data = {
-            descrizione: req.body.descrizione,
+            description: req.body.description,
+            status: req.body.status,
         }
 
-        var sql = 'INSERT INTO modello (descrizione) VALUES (?)'
-        var params = [data.descrizione]
+        var sql = 'INSERT INTO fornitore (nome) VALUES (?)'
+        var params = [data.nome]
         connpool.query(sql, params, (error, results) => {
             if (error) {
                 res.status(400).json({ "error": error.message })
@@ -37,8 +38,8 @@ function endpoint(app, connpool) {
 
 
 
-    app.get("/api/modello", (req, res, next) => {
-        var sql = "select * from modello"
+    app.get("/api/fornitore", (req, res, next) => {
+        var sql = "select * from fornitore"
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -53,8 +54,8 @@ function endpoint(app, connpool) {
     });
 
 
-    app.get("/api/modello/:id", (req, res) => {
-        var sql = "select * from modello where idModello = ?"
+    app.get("/api/fornitore/:id", (req, res) => {
+        var sql = "select * from fornitore where idFornitore = ?"
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -69,15 +70,15 @@ function endpoint(app, connpool) {
     });
 
 
-    app.put("/api/modello/:id", (req, res) => {
+    app.put("/api/fornitore/:id", (req, res) => {
         var data = {
-            descrizione: req.body.descrizione,
+            nome: req.body.nome,
         }
         connpool.execute(
-            `UPDATE modello set 
-               descrizione = COALESCE(?,descrizione)
-               WHERE idModello = ?`,
-            [data.descrizione, req.params.id],
+            `UPDATE fornitore set 
+               nome = COALESCE(?,nome)
+               WHERE idFornitore = ?`,
+            [data.nome, req.params.id],
             function (err, result) {
                 if (err) {
                     res.status(400).json({ "error": err.message })
@@ -94,9 +95,9 @@ function endpoint(app, connpool) {
 
 
 
-    app.delete("/api/modello/:id", (req, res) => {
+    app.delete("/api/fornitore/:id", (req, res) => {
         connpool.execute(
-            'DELETE FROM modello WHERE idModello = ?',
+            'DELETE FROM fornitore WHERE idFornitore = ?',
             [req.params.id],
             function (err, result) {
                 if (err) {
