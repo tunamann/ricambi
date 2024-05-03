@@ -1,6 +1,6 @@
 function endpoint(app, connpool) {
 
-    app.post("/api/prodotti", (req, res) => {
+    app.post("/api/ordine", (req, res) => {
         var errors = []
         /* controllo dati inseriti
         if (!req.body.description) {
@@ -15,12 +15,14 @@ function endpoint(app, connpool) {
             return;
         }
         var data = {
-            descrizione: req.body.descrizione,
-            compatibile: req.body.compatibile,
+            clienteFK: req.body.clienteFK,
+            fornitoreFK: req.body.fornitoreFK,
+            prodottoFK: req.body.prodottoFK,
+            quantita: req.body.quantita,
         }
 
-        var sql = 'INSERT INTO prodotto (descrizione,compatibile) VALUES (?,?)'
-        var params = [data.descrizione, data.compatibile]
+        var sql = 'INSERT INTO ordine (clienteFK, fornitoreFK, prodottoFK, quantita) VALUES (?,?,?,?)'
+        var params = [data.clienteFK, data.fornitoreFK, data.prodottoFK, data.quantita]
         connpool.query(sql, params, (error, results) => {
             if (error) {
                 res.status(400).json({ "error": error.message })
@@ -38,8 +40,8 @@ function endpoint(app, connpool) {
 
 
 
-    app.get("/api/prodotti", (req, res, next) => {
-        var sql = "select * from prodotto"
+    app.get("/api/ordine", (req, res, next) => {
+        var sql = "select * from ordine"
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -54,8 +56,8 @@ function endpoint(app, connpool) {
     });
 
 
-    app.get("/api/prodotti/:id", (req, res) => {
-        var sql = "select * from prodotto where idProdotto = ?"
+    app.get("/api/ordine/:id", (req, res) => {
+        var sql = "select * from ordine where idOrdine = ?"
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -70,17 +72,18 @@ function endpoint(app, connpool) {
     });
 
 
-    app.put("/api/prodotti/:id", (req, res) => {
+    app.put("/api/ordine/:id", (req, res) => {
         var data = {
-            descrizione: req.body.descrizione,
-            compatibile: req.body.compatibile,
+            nome: req.body.nome,
         }
         connpool.execute(
-            `UPDATE prodotto set 
-               descrizione = COALESCE(?,descrizione)
-               compatibile = COALESCE(?,compatibile)
-               WHERE idProdotto = ?`,
-            [data.descrizione, data.compatibile, req.params.id],
+            `UPDATE ordine set 
+               clienteFK = COALESCE(?,clienteFK)
+               fornitoreFK = COALESCE(?,fornitoreFK)
+               prodottoFK = COALESCE(?,prodottoFK)
+               quantita = COALESCE(?,quantita)
+               WHERE idOrdine = ?`,
+            [data.clienteFK, data.fornitoreFK, data.prodottoFK, data.quantita, req.params.id],
             function (err, result) {
                 if (err) {
                     res.status(400).json({ "error": err.message })
@@ -97,9 +100,9 @@ function endpoint(app, connpool) {
 
 
 
-    app.delete("/api/prodotti/:id", (req, res) => {
+    app.delete("/api/ordine/:id", (req, res) => {
         connpool.execute(
-            'DELETE FROM prodotti WHERE idProdotto = ?',
+            'DELETE FROM ordine WHERE idOrdine = ?',
             [req.params.id],
             function (err, result) {
                 if (err) {
