@@ -15,8 +15,8 @@ function endpoint(app, connpool) {
             return;
         }
         var data = {
-            description: req.body.description,
-            status: req.body.status,
+            nome: req.body.nome,
+
         }
 
         var sql = 'INSERT INTO cliente (nome) VALUES (?)'
