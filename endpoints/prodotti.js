@@ -2,7 +2,7 @@ function endpoint(app, connpool) {
 
     app.post("/api/prodotti", (req, res) => {
         var errors = []
-        /* controsllo dati inseriti
+        /* controllo dati inseriti
         if (!req.body.description) {
             errors.push("No description specified");
         }
@@ -16,11 +16,12 @@ function endpoint(app, connpool) {
         }
         var data = {
             descrizione: req.body.descrizione,
-            
+            compatibile: req.body.compatibile,
         }
 
-        var sql = 'INSERT INTO task (descrizione) VALUES ("desc")'
+        var sql = 'INSERT INTO prodotto (descrizione,compatibile) VALUES (?,?)'
         var params = [data.descrizione]
+        var params = [data.compatibile]
         connpool.query(sql, params, (error, results) => {
             if (error) {
                 res.status(400).json({ "error": error.message })
@@ -39,74 +40,75 @@ function endpoint(app, connpool) {
 
 
     app.get("/api/prodotti", (req, res, next) => {
-        var sql = "select * from prodotti"
+        var sql = "select * from prodotto"
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows
+                "message": "success",
+                "data": rows
             })
-          });
+        });
     });
 
 
     app.get("/api/prodotti/:id", (req, res) => {
-        var sql = "select * from prodotti where prodotti_id = ?"
+        var sql = "select * from prodotto where idProdotto = ?"
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows[0]
+                "message": "success",
+                "data": rows[0]
             })
-          });
+        });
     });
 
 
     app.put("/api/prodotti/:id", (req, res) => {
         var data = {
             descrizione: req.body.descrizione,
-            
+            compatibile: req.body.compatibile,
         }
         connpool.execute(
-            `UPDATE prodotti set 
-               descrizione = COALESCE(?,descrizione) 
-               WHERE descrizione_id = ?`,
-            [data.descrizione, req.params.id],
+            `UPDATE prodotto set 
+               descrizione = COALESCE(?,descrizione)
+               compatibile = COALESCE(?,compatibile)
+               WHERE idProdotto = ?`,
+            [data.descrizione, data.compatibile, req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                console.log(result )
+                console.log(result)
                 res.json({
                     message: "success",
                     data: data,
                     changes: result.affectedRows
                 })
-        });
+            });
     })
 
 
 
     app.delete("/api/prodotti/:id", (req, res) => {
         connpool.execute(
-            'DELETE FROM prodotti WHERE prodotti_id = ?',
+            'DELETE FROM prodotti WHERE idProdotto = ?',
             [req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                res.json({"message":"deleted", changes: result.affectedRows})
-        });
+                res.json({ "message": "deleted", changes: result.affectedRows })
+            });
     })
 
 

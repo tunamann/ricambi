@@ -42,14 +42,14 @@ function endpoint(app, connpool) {
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows
+                "message": "success",
+                "data": rows
             })
-          });
+        });
     });
 
 
@@ -58,19 +58,19 @@ function endpoint(app, connpool) {
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows[0]
+                "message": "success",
+                "data": rows[0]
             })
-          });
+        });
     });
 
 
     app.put("/api/modello/:id", (req, res) => {
-        var data = {    
+        var data = {
             descrizione: req.body.descrizione,
         }
         connpool.execute(
@@ -79,17 +79,17 @@ function endpoint(app, connpool) {
                WHERE idModello = ?`,
             [data.descrizione, req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                console.log(result )
+                console.log(result)
                 res.json({
                     message: "success",
                     data: data,
                     changes: result.affectedRows
                 })
-        });
+            });
     })
 
 
@@ -99,12 +99,12 @@ function endpoint(app, connpool) {
             'DELETE FROM modello WHERE idModello = ?',
             [req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                res.json({"message":"deleted", changes: result.affectedRows})
-        });
+                res.json({ "message": "deleted", changes: result.affectedRows })
+            });
     })
 
 

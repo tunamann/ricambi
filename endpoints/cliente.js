@@ -43,14 +43,14 @@ function endpoint(app, connpool) {
         var params = []
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows
+                "message": "success",
+                "data": rows
             })
-          });
+        });
     });
 
 
@@ -59,14 +59,14 @@ function endpoint(app, connpool) {
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
-              res.status(400).json({"error":err.message});
-              return;
+                res.status(400).json({ "error": err.message });
+                return;
             }
             res.json({
-                "message":"success",
-                "data":rows[0]
+                "message": "success",
+                "data": rows[0]
             })
-          });
+        });
     });
 
 
@@ -82,17 +82,17 @@ function endpoint(app, connpool) {
                WHERE task_id = ?`,
             [data.description, data.status, req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                console.log(result )
+                console.log(result)
                 res.json({
                     message: "success",
                     data: data,
                     changes: result.affectedRows
                 })
-        });
+            });
     })
 
 
@@ -102,12 +102,12 @@ function endpoint(app, connpool) {
             'DELETE FROM task WHERE task_id = ?',
             [req.params.id],
             function (err, result) {
-                if (err){
-                    res.status(400).json({"error": err.message})
+                if (err) {
+                    res.status(400).json({ "error": err.message })
                     return;
                 }
-                res.json({"message":"deleted", changes: result.affectedRows})
-        });
+                res.json({ "message": "deleted", changes: result.affectedRows })
+            });
     })
 
 
